@@ -1,0 +1,58 @@
+[
+    {
+        "pytorch": "2.12.0a0",
+        "torchvision": "0.26.0a0",
+        "torchaudio": "2.12.0a0",
+        "type": "nightly",
+        "label": "2.12-nightly",
+        "rocm_suffix": "7.13.0a20260313",
+        "python_versions": [
+            "py311",
+            "py312",
+            "py313"
+        ],
+        "notes": "May be unstable"
+    },
+    {
+        "pytorch": "2.11.0a0",
+        "torchvision": "0.25.0a0",
+        "torchaudio": "2.11.0a0",
+        "type": "stable",
+        "label": "2.11",
+        "rocm_suffix": "7.12.0a20260217",
+        "python_versions": [
+            "py311",
+            "py312",
+            "py313"
+        ],
+        "notes": ""
+    },
+    {
+        "pytorch": "2.10.0",
+        "torchvision": "0.25.0",
+        "torchaudio": "2.10.0",
+        "type": "stable",
+        "label": "2.10",
+        "rocm_suffix": "7.13.0a20260423",
+        "python_versions": [
+            "py311",
+            "py312",
+            "py313"
+        ],
+        "notes": ""
+    },
+    {
+        "pytorch": "2.9.1",
+        "torchvision": "0.24.1",
+        "torchaudio": "2.9.1",
+        "type": "stable",
+        "label": "2.9",
+        "rocm_suffix": "7.13.0a20260424",
+        "python_versions": [
+            "py311",
+            "py312",
+            "py313"
+        ],
+        "notes": ""
+    }
+]

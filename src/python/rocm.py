@@ -1,126 +1,17 @@
+import json
+from pathlib import Path
 from typing import List, Optional
 
-STABLE_RELEASES = [
-    {
-        "label": "7.2.1",
-        "rocm_rel": "7.2.1",
-        "base_url": "https://repo.radeon.com/rocm/windows/rocm-rel-7.2.1/",
-        "torch": "torch-2.9.1+rocm7.2.1-cp312-cp312-win_amd64.whl",
-        "torchaudio": "torchaudio-2.9.1+rocm7.2.1-cp312-cp312-win_amd64.whl",
-        "torchvision": "torchvision-0.24.1+rocm7.2.1-cp312-cp312-win_amd64.whl",
-        "rocm_sdk_core": "rocm_sdk_core-7.2.1-py3-none-win_amd64.whl",
-        "rocm_sdk_devel": "rocm_sdk_devel-7.2.1-py3-none-win_amd64.whl",
-        "rocm_sdk_libraries_custom": "rocm_sdk_libraries_custom-7.2.1-py3-none-win_amd64.whl",
-        "rocm_tarball": "rocm-7.2.1.tar.gz",
-        "pytorch_version": "2.9.1",
-        "torchvision_version": "0.24.1",
-        "torchaudio_version": "2.9.1",
-        "driver_required": "26.2.2",
-        "type": "stable",
-        "os": "Windows",
-        "python_versions": ["py312"],
-    },
-    {
-        "label": "7.2",
-        "rocm_rel": "7.2",
-        "base_url": "https://repo.radeon.com/rocm/windows/rocm-rel-7.2/",
-        "torch": "torch-2.9.1+rocmsdk20260116-cp312-cp312-win_amd64.whl",
-        "torchaudio": "torchaudio-2.9.1+rocmsdk20260116-cp312-cp312-win_amd64.whl",
-        "torchvision": "torchvision-0.24.1+rocmsdk20260116-cp312-cp312-win_amd64.whl",
-        "rocm_sdk_core": "rocm_sdk_core-7.2.0.dev0-py3-none-win_amd64.whl",
-        "rocm_sdk_devel": "rocm_sdk_devel-7.2.0.dev0-py3-none-win_amd64.whl",
-        "rocm_sdk_libraries_custom": "rocm_sdk_libraries_custom-7.2.0.dev0-py3-none-win_amd64.whl",
-        "rocm_tarball": "rocm-7.2.0.dev0.tar.gz",
-        "pytorch_version": "2.9.1",
-        "torchvision_version": "0.24.1",
-        "torchaudio_version": "2.9.1",
-        "driver_required": "26.1.1",
-        "type": "stable",
-        "os": "Windows",
-        "python_versions": ["py312"],
-    },
-    {
-        "label": "7.1.1",
-        "rocm_rel": "7.1.1",
-        "base_url": "https://repo.radeon.com/rocm/windows/rocm-rel-7.1.1/",
-        "torch": "torch-2.9.0+rocmsdk20251116-cp312-cp312-win_amd64.whl",
-        "torchaudio": "torchaudio-2.9.0+rocmsdk20251116-cp312-cp312-win_amd64.whl",
-        "torchvision": "torchvision-0.24.0+rocmsdk20251116-cp312-cp312-win_amd64.whl",
-        "rocm_sdk_core": "rocm_sdk_core-0.1.dev0-py3-none-win_amd64.whl",
-        "rocm_sdk_devel": "rocm_sdk_devel-0.1.dev0-py3-none-win_amd64.whl",
-        "rocm_sdk_libraries_custom": "rocm_sdk_libraries_custom-0.1.dev0-py3-none-win_amd64.whl",
-        "rocm_tarball": "rocm-0.1.dev0.tar.gz",
-        "pytorch_version": "2.9.0",
-        "torchvision_version": "0.24.0",
-        "torchaudio_version": "2.9.0",
-        "driver_required": "N/A",
-        "type": "stable",
-        "os": "Windows",
-        "python_versions": ["py312"],
-    },
-    {
-        "label": "6.4.4",
-        "rocm_rel": "6.4.4",
-        "base_url": "https://repo.radeon.com/rocm/windows/rocm-rel-6.4.4/",
-        "torch": "torch-2.8.0a0+gitfc14c65-cp312-cp312-win_amd64.whl",
-        "torchaudio": "",
-        "torchvision": "torchvision-0.24.0a0+c85f008-cp312-cp312-win_amd64.whl",
-        "rocm_sdk_core": "",
-        "rocm_sdk_devel": "",
-        "rocm_sdk_libraries_custom": "",
-        "rocm_tarball": "",
-        "pytorch_version": "2.8.0a0",
-        "torchvision_version": "0.24.0a0",
-        "torchaudio_version": "N/A",
-        "driver_required": "N/A",
-        "type": "stable",
-        "os": "Windows",
-        "python_versions": ["py312"],
-    },
-]
+_CURATED_DIR = Path(__file__).parent.parent / "curated"
 
-NIGHTLY_VERSIONS = [
-    {
-        "pytorch": "2.12.0a0",
-        "torchvision": "0.26.0a0",
-        "torchaudio": "2.12.0a0",
-        "type": "nightly",
-        "label": "2.12-nightly",
-        "rocm_suffix": "7.13.0a20260426",
-        "python_versions": ["py311", "py312", "py313"],
-        "notes": "May be unstable",
-    },
-    {
-        "pytorch": "2.11",
-        "torchvision": "0.25",
-        "torchaudio": "2.11",
-        "type": "stable",
-        "label": "2.11",
-        "rocm_suffix": "7.13.0a20260426",
-        "python_versions": ["py311", "py312", "py313"],
-        "notes": "",
-    },
-    {
-        "pytorch": "2.10",
-        "torchvision": "0.25",
-        "torchaudio": "2.10",
-        "type": "stable",
-        "label": "2.10",
-        "rocm_suffix": "7.12.0",
-        "python_versions": ["py311", "py312", "py313"],
-        "notes": "",
-    },
-    {
-        "pytorch": "2.9",
-        "torchvision": "0.24",
-        "torchaudio": "2.9",
-        "type": "stable",
-        "label": "2.9",
-        "rocm_suffix": "7.12.0",
-        "python_versions": ["py311", "py312", "py313"],
-        "notes": "",
-    },
-]
+
+def _load_json(name: str) -> list:
+    with open(_CURATED_DIR / name, encoding="utf-8") as f:
+        return json.load(f)
+
+
+STABLE_RELEASES = _load_json("stable_releases.json")
+NIGHTLY_VERSIONS = _load_json("nightly_versions.json")
 
 
 def get_stable_releases() -> list:

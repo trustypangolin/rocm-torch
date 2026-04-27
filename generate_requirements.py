@@ -94,19 +94,45 @@ def main():
 
         show_output_summary(all_generated)
     else:
-        os_selection = show_os_menu()
-        if os_selection == "both":
-            os_targets = ["Windows", "Linux"]
-        elif os_selection == "linux":
-            os_targets = ["Linux"]
+        if args.os_target:
+            os_sel = args.os_target.lower()
+            if os_sel == "both":
+                os_targets = ["Windows", "Linux"]
+            elif os_sel == "linux":
+                os_targets = ["Linux"]
+            else:
+                os_targets = ["Windows"]
         else:
-            os_targets = ["Windows"]
+            os_sel = show_os_menu()
+            if os_sel == "both":
+                os_targets = ["Windows", "Linux"]
+            elif os_sel == "linux":
+                os_targets = ["Linux"]
+            else:
+                os_targets = ["Windows"]
 
-        py_selection = show_python_menu()
-        py_tags = get_python_versions(py_selection)
+        if args.python_version:
+            py_tags = get_python_versions(args.python_version.lower())
+        else:
+            py_selection = show_python_menu()
+            py_tags = get_python_versions(py_selection)
 
         all_generated = []
-        if not args.nightly_only:
+        if args.stable_only:
+            stable_releases = get_stable_releases()
+            for rel in stable_releases:
+                result = generate_all_for_selection(
+                    rel, py_tags, os_targets, args.output_dir, args.dry_run
+                )
+                all_generated.extend(result)
+        elif args.nightly_only:
+            nightly_versions = get_nightly_versions()
+            for entry in nightly_versions:
+                result = generate_all_for_selection(
+                    entry, py_tags, os_targets, args.output_dir, args.dry_run
+                )
+                all_generated.extend(result)
+        else:
             want_stable = show_stable_menu()
             if want_stable:
                 stable_releases = get_stable_releases()
@@ -116,9 +142,7 @@ def main():
                         rel, py_tags, os_targets, args.output_dir, args.dry_run
                     )
                     all_generated.extend(result)
-
-        if not args.stable_only:
-            if not args.nightly_only:
+            else:
                 use_latest = show_nightly_prompt()
                 if use_latest:
                     latest = get_latest_nightly()

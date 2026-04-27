@@ -53,11 +53,39 @@ function Main {
         }
         Show-OutputSummary -GeneratedFiles $allGenerated
     } else {
-        $osTargets = Show-OSMenu
-        $pyTags = Show-PythonMenu
+        if (-not [string]::IsNullOrEmpty($OSTarget)) {
+            $osSelection = $OSTarget.ToLower()
+            $osTargets = switch ($osSelection) {
+                "windows" { @("Windows") }
+                "linux"   { @("Linux") }
+                "both"    { @("Windows", "Linux") }
+                default   { @("Windows") }
+            }
+        } else {
+            $osTargets = Show-OSMenu
+        }
+
+        if (-not [string]::IsNullOrEmpty($PythonVersion)) {
+            $pySelection = $PythonVersion.ToLower()
+            $pyTags = Get-PythonVersions -Selection $pySelection
+        } else {
+            $pyTags = Show-PythonMenu
+        }
 
         $allGenerated = @()
-        if (-not $NightlyOnly) {
+        if ($StableOnly) {
+            $stableReleases = Get-StableReleases
+            foreach ($rel in $stableReleases) {
+                $result = Generate-AllForSelection -Entry $rel -PyTags $pyTags -OSTargetList $osTargets -OutputDir $OutputDir -DryRun:$DryRun
+                if ($result) { $allGenerated += $result }
+            }
+        } elseif ($NightlyOnly) {
+            $nightlyVersions = Get-NightlyVersions
+            foreach ($entry in $nightlyVersions) {
+                $result = Generate-AllForSelection -Entry $entry -PyTags $pyTags -OSTargetList $osTargets -OutputDir $OutputDir -DryRun:$DryRun
+                if ($result) { $allGenerated += $result }
+            }
+        } else {
             $wantStable = Show-StableMenu
             if ($wantStable) {
                 $stableReleases = Get-StableReleases
@@ -66,11 +94,7 @@ function Main {
                     $result = Generate-AllForSelection -Entry $rel -PyTags $pyTags -OSTargetList $osTargets -OutputDir $OutputDir -DryRun:$DryRun
                     if ($result) { $allGenerated += $result }
                 }
-            }
-        }
-
-        if (-not $StableOnly) {
-            if (-not $NightlyOnly) {
+            } else {
                 $useLatest = Show-NightlyPrompt
                 if ($useLatest) {
                     $latest = Get-LatestNightly

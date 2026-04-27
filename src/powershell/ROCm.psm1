@@ -1,88 +1,65 @@
-$StableReleases = @(
-    @{
-        Label = "7.2.1"
-        RocmRel = "7.2.1"
-        BaseUrl = "https://repo.radeon.com/rocm/windows/rocm-rel-7.2.1/"
-        Torch = "torch-2.9.1+rocm7.2.1-cp312-cp312-win_amd64.whl"
-        TorchAudio = "torchaudio-2.9.1+rocm7.2.1-cp312-cp312-win_amd64.whl"
-        TorchVision = "torchvision-0.24.1+rocm7.2.1-cp312-cp312-win_amd64.whl"
-        RocmSdkCore = "rocm_sdk_core-7.2.1-py3-none-win_amd64.whl"
-        RocmSdkDevel = "rocm_sdk_devel-7.2.1-py3-none-win_amd64.whl"
-        RocmSdkLibs = "rocm_sdk_libraries_custom-7.2.1-py3-none-win_amd64.whl"
-        RocmTarball = "rocm-7.2.1.tar.gz"
-        PyTorchVersion = "2.9.1"
-        TorchvisionVersion = "0.24.1"
-        TorchaudioVersion = "2.9.1"
-        DriverRequired = "26.2.2"
-        Type = "stable"
-        OS = "Windows"
-        PythonVersions = @("py312")
-    },
-    @{
-        Label = "7.2"
-        RocmRel = "7.2"
-        BaseUrl = "https://repo.radeon.com/rocm/windows/rocm-rel-7.2/"
-        Torch = "torch-2.9.1+rocmsdk20260116-cp312-cp312-win_amd64.whl"
-        TorchAudio = "torchaudio-2.9.1+rocmsdk20260116-cp312-cp312-win_amd64.whl"
-        TorchVision = "torchvision-0.24.1+rocmsdk20260116-cp312-cp312-win_amd64.whl"
-        RocmSdkCore = "rocm_sdk_core-7.2.0.dev0-py3-none-win_amd64.whl"
-        RocmSdkDevel = "rocm_sdk_devel-7.2.0.dev0-py3-none-win_amd64.whl"
-        RocmSdkLibs = "rocm_sdk_libraries_custom-7.2.0.dev0-py3-none-win_amd64.whl"
-        RocmTarball = "rocm-7.2.0.dev0.tar.gz"
-        PyTorchVersion = "2.9.1"
-        TorchvisionVersion = "0.24.1"
-        TorchaudioVersion = "2.9.1"
-        DriverRequired = "26.1.1"
-        Type = "stable"
-        OS = "Windows"
-        PythonVersions = @("py312")
-    },
-    @{
-        Label = "7.1.1"
-        RocmRel = "7.1.1"
-        BaseUrl = "https://repo.radeon.com/rocm/windows/rocm-rel-7.1.1/"
-        Torch = "torch-2.9.0+rocmsdk20251116-cp312-cp312-win_amd64.whl"
-        TorchAudio = "torchaudio-2.9.0+rocmsdk20251116-cp312-cp312-win_amd64.whl"
-        TorchVision = "torchvision-0.24.0+rocmsdk20251116-cp312-cp312-win_amd64.whl"
-        RocmSdkCore = "rocm_sdk_core-0.1.dev0-py3-none-win_amd64.whl"
-        RocmSdkDevel = "rocm_sdk_devel-0.1.dev0-py3-none-win_amd64.whl"
-        RocmSdkLibs = "rocm_sdk_libraries_custom-0.1.dev0-py3-none-win_amd64.whl"
-        RocmTarball = "rocm-0.1.dev0.tar.gz"
-        PyTorchVersion = "2.9.0"
-        TorchvisionVersion = "0.24.0"
-        TorchaudioVersion = "2.9.0"
-        DriverRequired = "N/A"
-        Type = "stable"
-        OS = "Windows"
-        PythonVersions = @("py312")
-    },
-    @{
-        Label = "6.4.4"
-        RocmRel = "6.4.4"
-        BaseUrl = "https://repo.radeon.com/rocm/windows/rocm-rel-6.4.4/"
-        Torch = "torch-2.8.0a0+gitfc14c65-cp312-cp312-win_amd64.whl"
-        TorchAudio = ""
-        TorchVision = "torchvision-0.24.0a0+c85f008-cp312-cp312-win_amd64.whl"
-        RocmSdkCore = ""
-        RocmSdkDevel = ""
-        RocmSdkLibs = ""
-        RocmTarball = ""
-        PyTorchVersion = "2.8.0a0"
-        TorchvisionVersion = "0.24.0a0"
-        TorchaudioVersion = "N/A"
-        DriverRequired = "N/A"
-        Type = "stable"
-        OS = "Windows"
-        PythonVersions = @("py312")
-    }
-)
+$Script:CuratedDir = Join-Path $PSScriptRoot "..\curated"
 
-$NightlyVersions = @(
-    @{ PyTorch = "2.12.0a0"; Torchvision = "0.26.0a0"; Torchaudio = "2.12.0a0"; Type = "nightly"; Label = "2.12-nightly"; RocmSuffix = "7.13.0a20260426"; PythonVersions = @("py311","py312","py313"); Notes = "May be unstable" },
-    @{ PyTorch = "2.11";     Torchvision = "0.25";     Torchaudio = "2.11";     Type = "stable";  Label = "2.11";     RocmSuffix = "7.13.0a20260426"; PythonVersions = @("py311","py312","py313"); Notes = "" },
-    @{ PyTorch = "2.10";     Torchvision = "0.25";     Torchaudio = "2.10";     Type = "stable";  Label = "2.10";     RocmSuffix = "7.12.0";          PythonVersions = @("py311","py312","py313"); Notes = "" },
-    @{ PyTorch = "2.9";      Torchvision = "0.24";     Torchaudio = "2.9";      Type = "stable";  Label = "2.9";      RocmSuffix = "7.12.0";          PythonVersions = @("py311","py312","py313"); Notes = "" }
-)
+$Script:StableKeyMap = @{
+    "rocm_rel" = "RocmRel"
+    "base_url" = "BaseUrl"
+    "torch" = "Torch"
+    "torchaudio" = "TorchAudio"
+    "torchvision" = "TorchVision"
+    "rocm_sdk_core" = "RocmSdkCore"
+    "rocm_sdk_devel" = "RocmSdkDevel"
+    "rocm_sdk_libraries_custom" = "RocmSdkLibs"
+    "rocm_tarball" = "RocmTarball"
+    "pytorch_version" = "PyTorchVersion"
+    "torchvision_version" = "TorchvisionVersion"
+    "torchaudio_version" = "TorchaudioVersion"
+    "driver_required" = "DriverRequired"
+    "type" = "Type"
+    "os" = "OS"
+    "python_versions" = "PythonVersions"
+    "label" = "Label"
+}
+
+$Script:NightlyKeyMap = @{
+    "pytorch" = "PyTorch"
+    "torchvision" = "Torchvision"
+    "torchaudio" = "Torchaudio"
+    "type" = "Type"
+    "label" = "Label"
+    "rocm_suffix" = "RocmSuffix"
+    "python_versions" = "PythonVersions"
+    "notes" = "Notes"
+}
+
+function Script:Convert-JsonToHashtable {
+    param([pscustomobject]$Obj, [hashtable]$KeyMap)
+    $ht = @{}
+    foreach ($prop in $Obj.PSObject.Properties) {
+        $jsonKey = $prop.Name
+        $key = if ($KeyMap.ContainsKey($jsonKey)) { $KeyMap[$jsonKey] } else { $jsonKey.Substring(0, 1).ToUpper() + $jsonKey.Substring(1) }
+        $value = $prop.Value
+        if ($value -is [System.Array]) {
+            $value = @($value)
+        }
+        $ht[$key] = $value
+    }
+    return $ht
+}
+
+function Script:Load-StableReleases {
+    $path = Join-Path $Script:CuratedDir "stable_releases.json"
+    $json = Get-Content $path -Raw | ConvertFrom-Json
+    return @($json | ForEach-Object { Convert-JsonToHashtable -Obj $_ -KeyMap $Script:StableKeyMap })
+}
+
+function Script:Load-NightlyVersions {
+    $path = Join-Path $Script:CuratedDir "nightly_versions.json"
+    $json = Get-Content $path -Raw | ConvertFrom-Json
+    return @($json | ForEach-Object { Convert-JsonToHashtable -Obj $_ -KeyMap $Script:NightlyKeyMap })
+}
+
+$StableReleases = Load-StableReleases
+$NightlyVersions = Load-NightlyVersions
 
 function Get-StableReleases {
     return $StableReleases
