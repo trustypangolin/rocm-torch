@@ -11,7 +11,12 @@ def _load_json(name: str) -> list:
 
 
 STABLE_RELEASES = _load_json("stable_releases.json")
-NIGHTLY_VERSIONS = _load_json("nightly_versions.json")
+
+_LATEST_PATH = _CURATED_DIR / "latest_versions.json"
+if _LATEST_PATH.exists():
+    LATEST_VERSIONS = _load_json("latest_versions.json")
+else:
+    LATEST_VERSIONS = _load_json("nightly_versions.json")
 
 
 def get_stable_releases() -> list:
@@ -19,19 +24,19 @@ def get_stable_releases() -> list:
 
 
 def get_nightly_versions() -> list:
-    return NIGHTLY_VERSIONS
+    return LATEST_VERSIONS
 
 
 def get_release_by_label(label: str) -> Optional[dict]:
-    for rel in STABLE_RELEASES + NIGHTLY_VERSIONS:
+    for rel in STABLE_RELEASES + LATEST_VERSIONS:
         if rel.get("label") == label:
             return rel
     return None
 
 
 def get_latest_nightly() -> Optional[dict]:
-    if NIGHTLY_VERSIONS:
-        return NIGHTLY_VERSIONS[0]
+    if LATEST_VERSIONS:
+        return LATEST_VERSIONS[0]
     return None
 
 
@@ -40,4 +45,4 @@ def filter_stable_by_os(os_name: str) -> list:
 
 
 def filter_nightly_by_python(py_tag: str) -> list:
-    return [v for v in NIGHTLY_VERSIONS if py_tag in v.get("python_versions", [])]
+    return [v for v in LATEST_VERSIONS if py_tag in v.get("python_versions", [])]

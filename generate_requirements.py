@@ -80,7 +80,7 @@ def main():
             stable_releases = get_stable_releases()
             for rel in stable_releases:
                 result = generate_all_for_selection(
-                    rel, py_tags, os_targets, args.output_dir, args.dry_run
+                    rel, py_tags, os_targets, args.output_dir, args.dry_run, True
                 )
                 all_generated.extend(result)
 
@@ -88,7 +88,7 @@ def main():
             nightly_versions = get_nightly_versions()
             for entry in nightly_versions:
                 result = generate_all_for_selection(
-                    entry, py_tags, os_targets, args.output_dir, args.dry_run
+                    entry, py_tags, os_targets, args.output_dir, args.dry_run, True
                 )
                 all_generated.extend(result)
 

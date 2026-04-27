@@ -8,10 +8,11 @@ function Generate-IndexBased {
 --index-url https://rocm.nightlies.amd.com/v2/gfx1151/
 $preFlag
 torch==$($Entry.PyTorch)+rocm$($Entry.RocmSuffix)
-torchvision==$($Entry.Torchvision)+rocm$($Entry.RocmSuffix)
-torchaudio==$($Entry.Torchaudio)+rocm$($Entry.RocmSuffix)
+torchvision==$($Entry.Torchvision)
+torchaudio==$($Entry.Torchaudio)
 rocm==$($Entry.RocmSuffix)
 rocm-sdk-core==$($Entry.RocmSuffix)
+rocm-sdk-devel==$($Entry.RocmSuffix)
 rocm-sdk-libraries-gfx1151==$($Entry.RocmSuffix)
 "@
     return $Content.Trim()
@@ -42,18 +43,58 @@ function Generate-DirectURL {
 
 function Get-OutputFileName {
     param([hashtable]$Entry, [string]$PyTag, [string]$OSTag, [string]$OutputDir)
-    $label = $Entry.Label
     $isDirectStable = ($Entry.Type -eq "stable" -and $Entry.ContainsKey("DriverRequired"))
     if ($isDirectStable) {
-        $baseName = "requirements-$label-stable-$OSTag-$PyTag.txt"
+        $rocmVer = $Entry.RocmRel
+        $pyVer = Format-PythonVersion -PyTag $PyTag
+        $baseName = "requirements-stable-win-$rocmVer-$pyVer.txt"
     } else {
-        $typeSuffix = if ($Entry.Type -eq "nightly") { "-nightly" } else { "" }
-        $baseName = "requirements-$label$typeSuffix-$PyTag.txt"
+        $rocmSuffix = $Entry.RocmSuffix
+        $rocmMajor = Extract-RocmMajor -Suffix $rocmSuffix
+        $torchVer = Extract-TorchVersion -Version $Entry.PyTorch
+        $revDate = Extract-RevisionDate -Suffix $rocmSuffix
+        $baseName = "requirements-nightly-win-rocm$rocmMajor-torch$torchVer-$revDate-$PyTag.txt"
     }
     if ($OutputDir -and $OutputDir -ne ".") {
         return Join-Path $OutputDir $baseName
     }
     return $baseName
+}
+
+function Format-PythonVersion {
+    param([string]$PyTag)
+    $digits = $PyTag -replace 'py', ''
+    if ($digits.Length -ge 3) {
+        return "$($digits[0]).$($digits.Substring(1))"
+    }
+    return $digits
+}
+
+function Extract-RocmMajor {
+    param([string]$Suffix)
+    $idx = $Suffix.IndexOf('a')
+    if ($idx -lt 0) { return $Suffix }
+    $base = $Suffix.Substring(0, $idx).TrimEnd('.')
+    $parts = $base -split '\.'
+    if ($parts.Count -ge 2) {
+        return "$($parts[0]).$($parts[1])"
+    }
+    return $base
+}
+
+function Extract-TorchVersion {
+    param([string]$Version)
+    if ($Version.EndsWith('a0')) {
+        return $Version.Substring(0, $Version.Length - 2)
+    }
+    return $Version
+}
+
+function Extract-RevisionDate {
+    param([string]$Suffix)
+    $idx = $Suffix.IndexOf('a')
+    if ($idx -lt 0) { return $Suffix }
+    return $Suffix.Substring($idx)
 }
 
 function Write-RequirementsFile {

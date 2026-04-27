@@ -53,13 +53,25 @@ function Script:Load-StableReleases {
 }
 
 function Script:Load-NightlyVersions {
-    $path = Join-Path $Script:CuratedDir "nightly_versions.json"
-    $json = Get-Content $path -Raw | ConvertFrom-Json
+    param([string]$Path)
+    if (-not $Path) {
+        $Path = Join-Path $Script:CuratedDir "nightly_versions.json"
+    }
+    $json = Get-Content $Path -Raw | ConvertFrom-Json
     return @($json | ForEach-Object { Convert-JsonToHashtable -Obj $_ -KeyMap $Script:NightlyKeyMap })
 }
 
 $StableReleases = Load-StableReleases
-$NightlyVersions = Load-NightlyVersions
+
+$LatestPath = Join-Path $Script:CuratedDir "latest_versions.json"
+$FallbackPath = Join-Path $Script:CuratedDir "nightly_versions.json"
+if (Test-Path $LatestPath) {
+    $NightlyVersions = Load-NightlyVersions -Path $LatestPath
+} elseif (Test-Path $FallbackPath) {
+    $NightlyVersions = Load-NightlyVersions -Path $FallbackPath
+} else {
+    $NightlyVersions = @()
+}
 
 function Get-StableReleases {
     return $StableReleases
